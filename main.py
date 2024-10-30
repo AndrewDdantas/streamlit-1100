@@ -61,12 +61,7 @@ if 'carteira' not in st.session_state and 'estoque' not in st.session_state and 
     df['VALTOTAL'] = df['VALTOTAL'].str.replace(',','.').astype(float)
     df['CUBTOTAL'] = df['CUBTOTAL'].str.replace(',', '.').astype(float)
     df = df.sort_values('NUMPEDVEN')
-    deparamodais = pd.read_excel('de_para_modais.xlsx','Modais')
-    deparamodais = deparamodais.astype(str)
-    deparafiliais = pd.read_excel('de_para_modais.xlsx','Filiais')
-    deparafiliais = deparafiliais.astype(str)
-    deparafiliais['Cód'] = deparafiliais['Cód'].astype(str)
-    st.session_state['carteira'] = df_union
+    st.session_state['carteira'] = df
 
 
 df_filter = st.session_state['carteira']
@@ -86,17 +81,8 @@ top_familia = top_familia.reset_index()
 top_familia.columns = ['Familias', 'Peças', 'Cubagem']
 
 carteira_dias = df_filter['CUBTOTAL'].sum()
-val = {'Tipo':['Carteira Atual', 'Capacidade', 'Dias Em Carteira'], 'Valores':[fmt_num(carteira_dias, tipo='CUBAGEM'), '975', fmt_num(carteira_dias/975, tipo='CUBAGEM', casas=2)]}
+val = {'Tipo':['Carteira Atual', 'Capacidade', 'Dias Em Carteira'], 'Valores':[fmt_num(carteira_dias, tipo='CUBAGEM'), '693', fmt_num(carteira_dias/693, tipo='CUBAGEM', casas=2)]}
 carteira_dias = pd.DataFrame(val)
-
-df_filter['QTCOMP'] = df_filter['QTCOMP'].astype(float) 
-dinamica_pecas = pd.pivot_table(df_filter, values='QTCOMP', index='Filial', columns='Modal Master', aggfunc='sum', fill_value=0)    
-dinamica_pecas['Total'] = dinamica_pecas.sum(axis=1)
-dinamica_pecas = dinamica_pecas.sort_values('Total', ascending=False).applymap(fmt_num, tipo='NORMAL')
-
-dinamica_cub = pd.pivot_table(df_filter, values='CUBTOTAL', index='Filial', columns='Modal Master', aggfunc='sum', fill_value=0)
-dinamica_cub['Total'] = dinamica_cub.sum(axis=1)
-dinamica_cub = dinamica_cub.sort_values('Total', ascending=False).applymap(fmt_num, tipo='CUBAGEM', casas=1)
 
 
 col1, col2, col3 = st.columns(3)
@@ -105,8 +91,3 @@ col1.dataframe(status, hide_index=True)
 col3.dataframe(top_familia, hide_index=True)
 col1.dataframe(carteira_dias, hide_index=True)
 
-colun1, colun2 = st.columns(2)
-colun1.write('Modais por Filial Peças.')
-colun1.dataframe(dinamica_pecas)
-colun2.write('Modais por Filial Cubagem.')
-colun2.dataframe(dinamica_cub)
