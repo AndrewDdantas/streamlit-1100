@@ -69,14 +69,14 @@ df_filter = st.session_state['carteira']
 status = df_filter.groupby('STATUS').agg({'QTCOMP': 'sum', 'CUBTOTAL': 'sum'}).head(10)
 status.loc['Total'] = status.sum()
 status['CUBTOTAL'] = status['CUBTOTAL'].apply(fmt_num, tipo='CUBAGEM', casas=1)
-status['QTCOMP'] = status['QTCOMP'].apply(fmt_num, tipo='NORMAL')
+status['QTCOMP'] = status['QTCOMP'].apply(fmt_num, tipo='CUBAGEM')
 status = status.reset_index()
 status.columns = ['Status', 'Peças', 'Cubagem']
 
 
 top_familia = df_filter.groupby('FAMILIA').agg({'QTCOMP': 'sum', 'CUBTOTAL': 'sum'}).sort_values('CUBTOTAL', ascending=False).head(10)
 top_familia['CUBTOTAL'] = top_familia['CUBTOTAL'].apply(fmt_num, tipo='CUBAGEM', casas=1)
-top_familia['QTCOMP'] = top_familia['QTCOMP'].apply(fmt_num, tipo='NORMAL')
+top_familia['QTCOMP'] = top_familia['QTCOMP'].apply(fmt_num, tipo='CUBAGEM')
 top_familia = top_familia.reset_index()
 top_familia.columns = ['Familias', 'Peças', 'Cubagem']
 
